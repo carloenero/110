@@ -111,7 +111,7 @@ const saveToSupabase = async (hotel) => {
     <div class="hotel-reviews mt-5">
       <h2>Hotel Reviews</h2>
       <div class="row">
-        <div v-for="(hotel, index) in filteredHotels.slice(0, 2)" :key="index" class="col-md-4">
+        <div v-for="(hotel, index) in filteredHotels" :key="index" class="col-md-4">
           <div class="card">
             <img :src="hotel.image" class="card-img-top" alt="Hotel image">
             <div class="card-body">
