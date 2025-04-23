@@ -22,7 +22,7 @@ const filteredPlaces = computed(() => {
   if (!searchQuery.value) {
     return places.value; // Return all places if no search query
   }
-  return places.value.filter(place => 
+  return places.value.filter(places => 
     place.name.toLowerCase().includes(searchQuery.value.toLowerCase())
   );
 });
@@ -41,7 +41,7 @@ const saveToSupabase = async (place) => {
       .from('recommendations')
       .insert([{
         created_at: new Date().toISOString(),
-        target_type: 'places',
+        target_type: 'place',
         user_id: user.id,
         target_spot: place.id,
       }]);
@@ -59,7 +59,7 @@ const saveToSupabase = async (place) => {
 
 <template>
   <LayoutView>
-    <h1 class="p-4 text-center">Place Reviews</h1>
+    <h1 class="p-4 text-center">Places Reviews</h1>
 
     <!-- Search Input -->
     <div class="search-container p-4">
@@ -67,7 +67,7 @@ const saveToSupabase = async (place) => {
         v-model="searchQuery"
         type="text"
         class="form-control"
-        placeholder="Search for place by name"
+        placeholder="Search for Places by name"
       />
     </div>
 
@@ -90,7 +90,7 @@ const saveToSupabase = async (place) => {
           v-for="(place, index) in filteredPlaces" 
           :key="index" 
           :class="{ 'carousel-item': true, active: activeIndex === index }">
-          <img :src="place.image" class="d-block w-100" alt="place image">
+          <img :src="place.image" class="d-block w-100" alt="Place image">
           <div class="carousel-caption d-none d-md-block">
             <h5>{{ place.name }}</h5>
             <p class="text-shadow">{{ place.review }}</p>
@@ -107,13 +107,13 @@ const saveToSupabase = async (place) => {
       </button>
     </div>
 
-    <!-- Places Reviews -->
+    <!-- Place Reviews -->
     <div class="hotel-reviews mt-5">
       <h2>Places Reviews</h2>
       <div class="row">
-        <div v-for="(place, index) in filteredPlaces.slice(0, 2)" :key="index" class="col-md-4">
+        <div v-for="(place, index) in filteredPlaces" :key="index" class="col-md-4">
           <div class="card">
-            <img :src="place.image" class="card-img-top" alt="Places image">
+            <img :src="place.image" class="card-img-top" alt="Place image">
             <div class="card-body">
               <h5 class="card-title">{{ place.name }}<i @click="saveToSupabase(place)" class="p-4 bi bi-heart"></i></h5>
               <div class="rating">
