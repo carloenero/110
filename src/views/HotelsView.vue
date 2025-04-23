@@ -1,9 +1,10 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { supabase } from '@/supabase'; // Import Supabase client
 import LayoutView from '@/components/HomeLayout.vue';
 
 const hotels = ref([]); // Array to store hotel data
+const searchQuery = ref(''); // Search input for hotel names
 const activeIndex = ref(0); // To manage the active carousel slide
 
 // Fetch hotels from Supabase when component is mounted
@@ -14,6 +15,16 @@ onMounted(async () => {
     return;
   }
   hotels.value = data; // Store fetched hotel data into the hotels array
+});
+
+// Computed property to filter hotels based on search query
+const filteredHotels = computed(() => {
+  if (!searchQuery.value) {
+    return hotels.value; // Return all hotels if no search query
+  }
+  return hotels.value.filter(hotel => 
+    hotel.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+  );
 });
 
 // Save hotel interaction to Supabase
@@ -28,21 +39,19 @@ const saveToSupabase = async (hotel) => {
   try {
     const { data: recommendationData, error: recommendationError } = await supabase
       .from('recommendations')
-      .insert([
-        {
-          created_at: new Date().toISOString(),
-          target_type: 'hotel',
-          user_id: user.id,
-          target_spot: hotel.id,
-        }
-      ]);
+      .insert([{
+        created_at: new Date().toISOString(),
+        target_type: 'hotel',
+        user_id: user.id,
+        target_spot: hotel.id,
+      }]);
 
     if (recommendationError) {
       console.error('Error saving recommendation:', recommendationError);
     } else {
       console.log('Recommendation saved:', recommendationData);
     }
-  } catch (err) { 
+  } catch (err) {
     console.error('Error:', err);
   }
 };
@@ -52,11 +61,21 @@ const saveToSupabase = async (hotel) => {
   <LayoutView>
     <h1 class="p-4 text-center">Hotel Reviews</h1>
 
+    <!-- Search Input -->
+    <div class="search-container p-4">
+      <input
+        v-model="searchQuery"
+        type="text"
+        class="form-control"
+        placeholder="Search for hotels by name"
+      />
+    </div>
+
     <!-- Carousel -->
     <div id="carouselExampleCaptions" class="carousel slide">
       <div class="carousel-indicators">
         <button 
-          v-for="(hotel, index) in hotels" 
+          v-for="(hotel, index) in filteredHotels" 
           :key="index" 
           type="button" 
           :data-bs-target="'#carouselExampleCaptions'" 
@@ -68,7 +87,7 @@ const saveToSupabase = async (hotel) => {
       </div>
       <div class="carousel-inner">
         <div 
-          v-for="(hotel, index) in hotels" 
+          v-for="(hotel, index) in filteredHotels" 
           :key="index" 
           :class="{ 'carousel-item': true, active: activeIndex === index }">
           <img :src="hotel.image" class="d-block w-100" alt="Hotel image">
@@ -92,7 +111,7 @@ const saveToSupabase = async (hotel) => {
     <div class="hotel-reviews mt-5">
       <h2>Hotel Reviews</h2>
       <div class="row">
-        <div v-for="(hotel, index) in hotels" :key="index" class="col-md-4">
+        <div v-for="(hotel, index) in filteredHotels.slice(0, 2)" :key="index" class="col-md-4">
           <div class="card">
             <img :src="hotel.image" class="card-img-top" alt="Hotel image">
             <div class="card-body">
@@ -145,5 +164,10 @@ const saveToSupabase = async (hotel) => {
 
 .bi-heart:hover {
   color: darkred;
+}
+
+.search-container {
+  text-align: center;
+  margin-bottom: 20px;
 }
 </style>
