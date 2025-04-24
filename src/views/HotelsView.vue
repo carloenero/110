@@ -1,60 +1,65 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue';
-import { supabase } from '@/supabase'; // Import Supabase client
-import LayoutView from '@/components/HomeLayout.vue';
+import { ref, onMounted, computed } from 'vue'
+import { supabase } from '@/supabase' // Import Supabase client
+import LayoutView from '@/components/HomeLayout.vue'
 
-const hotels = ref([]); // Array to store hotel data
-const searchQuery = ref(''); // Search input for hotel names
-const activeIndex = ref(0); // To manage the active carousel slide
+const hotels = ref([]) // Array to store hotel data
+const searchQuery = ref('') // Search input for hotel names
+const activeIndex = ref(0) // To manage the active carousel slide
 
 // Fetch hotels from Supabase when component is mounted
 onMounted(async () => {
-  const { data, error } = await supabase.from('hotels').select('*');
+  const { data, error } = await supabase.from('hotels').select('*')
   if (error) {
-    console.error('Error fetching hotels:', error);
-    return;
+    console.error('Error fetching hotels:', error)
+    return
   }
-  hotels.value = data; // Store fetched hotel data into the hotels array
-});
+  hotels.value = data // Store fetched hotel data into the hotels array
+})
 
 // Computed property to filter hotels based on search query
 const filteredHotels = computed(() => {
   if (!searchQuery.value) {
-    return hotels.value; // Return all hotels if no search query
+    return hotels.value // Return all hotels if no search query
   }
-  return hotels.value.filter(hotel => 
-    hotel.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-  );
-});
+  return hotels.value.filter((hotel) =>
+    hotel.name.toLowerCase().includes(searchQuery.value.toLowerCase()),
+  )
+})
 
 // Save hotel interaction to Supabase
 const saveToSupabase = async (hotel) => {
-  const { data: { user }, error: userError } = await supabase.auth.getUser();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser()
 
   if (userError || !user) {
-    console.log('No user logged in');
-    return;
+    console.log('No user logged in')
+    return
   }
 
   try {
     const { data: recommendationData, error: recommendationError } = await supabase
-      .from('recommendations')
-      .insert([{
-        created_at: new Date().toISOString(),
-        target_type: 'hotel',
-        user_id: user.id,
-        target_spot: hotel.id,
-      }]);
+      .from('favorites')
+      .insert([
+        {
+          created_at: new Date().toISOString(),
+          target_type: 'hotel',
+          user_id: user.id,
+          target_spot: hotel.id,
+        },
+      ])
 
     if (recommendationError) {
-      console.error('Error saving recommendation:', recommendationError);
+      console.error('Error saving recommendation:', recommendationError)
     } else {
-      console.log('Recommendation saved:', recommendationData);
+      console.log('favorites saved:', recommendationData)
     }
   } catch (err) {
-    console.error('Error:', err);
+    console.error('Error:', err)
   }
-};
+}
 </script>
 
 <template>
@@ -74,34 +79,45 @@ const saveToSupabase = async (hotel) => {
     <!-- Carousel -->
     <div id="carouselExampleCaptions" class="carousel slide">
       <div class="carousel-indicators">
-        <button 
-          v-for="(hotel, index) in filteredHotels" 
-          :key="index" 
-          type="button" 
-          :data-bs-target="'#carouselExampleCaptions'" 
-          :data-bs-slide-to="index" 
-          :class="{ active: activeIndex === index }" 
-          aria-current="index === activeIndex" 
-          aria-label="'Slide ' + (index + 1)">
-        </button>
+        <button
+          v-for="(hotel, index) in filteredHotels"
+          :key="index"
+          type="button"
+          :data-bs-target="'#carouselExampleCaptions'"
+          :data-bs-slide-to="index"
+          :class="{ active: activeIndex === index }"
+          aria-current="index === activeIndex"
+          aria-label="'Slide ' + (index + 1)"
+        ></button>
       </div>
       <div class="carousel-inner">
-        <div 
-          v-for="(hotel, index) in filteredHotels" 
-          :key="index" 
-          :class="{ 'carousel-item': true, active: activeIndex === index }">
-          <img :src="hotel.image" class="d-block w-100" alt="Hotel image">
+        <div
+          v-for="(hotel, index) in filteredHotels"
+          :key="index"
+          :class="{ 'carousel-item': true, active: activeIndex === index }"
+        >
+          <img :src="hotel.image" class="d-block w-100" alt="Hotel image" />
           <div class="carousel-caption d-none d-md-block">
             <h5>{{ hotel.name }}</h5>
             <p class="text-shadow">{{ hotel.review }}</p>
           </div>
         </div>
       </div>
-      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+      <button
+        class="carousel-control-prev"
+        type="button"
+        data-bs-target="#carouselExampleCaptions"
+        data-bs-slide="prev"
+      >
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
         <span class="visually-hidden">Previous</span>
       </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+      <button
+        class="carousel-control-next"
+        type="button"
+        data-bs-target="#carouselExampleCaptions"
+        data-bs-slide="next"
+      >
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
         <span class="visually-hidden">Next</span>
       </button>
@@ -113,11 +129,18 @@ const saveToSupabase = async (hotel) => {
       <div class="row">
         <div v-for="(hotel, index) in filteredHotels" :key="index" class="col-md-4">
           <div class="card">
-            <img :src="hotel.image" class="card-img-top" alt="Hotel image">
+            <img :src="hotel.image" class="card-img-top" alt="Hotel image" />
             <div class="card-body">
-              <h5 class="card-title">{{ hotel.name }}<i @click="saveToSupabase(hotel)" class="p-4 bi bi-heart"></i></h5>
+              <h5 class="card-title">
+                {{ hotel.name }}<i @click="saveToSupabase(hotel)" class="p-4 bi bi-heart"></i>
+              </h5>
               <div class="rating">
-                <span v-for="n in 5" :key="n" :class="{'text-warning': n <= hotel.rating, 'text-muted': n > hotel.rating}">★</span>
+                <span
+                  v-for="n in 5"
+                  :key="n"
+                  :class="{ 'text-warning': n <= hotel.rating, 'text-muted': n > hotel.rating }"
+                  >★</span
+                >
               </div>
               <p class="card-text">{{ hotel.review }}</p>
             </div>
