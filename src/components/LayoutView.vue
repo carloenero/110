@@ -1,38 +1,58 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRouter, useRoute } from 'vue-router'; // Import Vue Router
-import { supabase } from '../supabase'; // Import Supabase client
-import logo from '@/assets/images/logo.png'; // Import image for the login page
+import { ref, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router' // Import Vue Router
+import { supabase } from '../supabase' // Import Supabase client
+import logo from '@/assets/images/logo.png' // Import image for the login page
 
 // Define the router and route
-const router = useRouter();
-const route = useRoute(); // Get the current route
+const router = useRouter()
+const route = useRoute() // Get the current route
 
 // Define ref for user session
-const user = ref(null);
+const user = ref(null)
 
 // Check user session on mounted
 onMounted(async () => {
-  const { data: session } = await supabase.auth.getSession();  // Correct way to get session
-  user.value = session?.user;  // Assign the user data to the ref
-});
+  const { data: session } = await supabase.auth.getSession() // Correct way to get session
+  user.value = session?.user // Assign the user data to the ref
+})
 </script>
 
 <template>
   <div>
     <!-- Conditionally render the layout (Navbar, Slot, Footer) for specific routes -->
-    <div v-if="route.name === 'landing' || route.name === 'login' || route.name === 'register'" class="background-color">
+    <div
+      v-if="route.name === 'landing' || route.name === 'login' || route.name === 'register'"
+      class="background-color"
+    >
       <!-- Navbar -->
       <nav class="navbar bg-body-tertiary fixed-top shadow-sm">
         <div class="container-fluid">
-          <h1 class="navbar-brand" href="#">Explora Butuan</h1>
-          <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+          <h1 class="navbar-brand" href="#">Explorra D’ Explorer </h1>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasNavbar"
+            aria-controls="offcanvasNavbar"
+            aria-label="Toggle navigation"
+          >
             <span class="navbar-toggler-icon"></span>
           </button>
-          <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+          <div
+            class="offcanvas offcanvas-end"
+            tabindex="-1"
+            id="offcanvasNavbar"
+            aria-labelledby="offcanvasNavbarLabel"
+          >
             <div class="offcanvas-header">
               <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="offcanvas"
+                aria-label="Close"
+              ></button>
             </div>
             <div class="offcanvas-body">
               <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
@@ -55,7 +75,7 @@ onMounted(async () => {
       <div class="container py-5">
         <div class="col-sm-12 text-center">
           <img id="logo" :src="logo" width="50%" height="5%" alt="Logo" />
-          <h1 class="fst-italic">Explora Butuan</h1>
+          <h1 class="fst-italic">Explorra D’ Explorer </h1>
         </div>
         <!-- Content Slot -->
         <slot></slot>
@@ -79,7 +99,8 @@ onMounted(async () => {
 
     <!-- For the Home route (and other routes), render only the content -->
     <div v-else>
-      <slot></slot> <!-- The slot will be replaced with the content of the route -->
+      <slot></slot>
+      <!-- The slot will be replaced with the content of the route -->
     </div>
   </div>
 </template>
@@ -87,7 +108,14 @@ onMounted(async () => {
 <style scoped>
 /* Navbar Styles */
 .background-color {
-  background: repeating-linear-gradient(45deg, #BBD8A3, #BBD8A3 33%, #fb653c 33%, #f6c96e 66%, #f6c96e 66%);
+  background: repeating-linear-gradient(
+    45deg,
+    #bbd8a3,
+    #bbd8a3 33%,
+    #fb653c 33%,
+    #f6c96e 66%,
+    #f6c96e 66%
+  );
 }
 
 .navbar-brand {
@@ -100,7 +128,7 @@ onMounted(async () => {
 }
 
 .offcanvas-body {
-  background-color: #FFF6E0;
+  background-color: #fff6e0;
 }
 
 /* Home View Styles */
@@ -177,14 +205,16 @@ img {
 }
 
 .nav-item {
-  border: 2px solid #FFEDD8; /* Border color */
-  background-color: #FFA559;
+  border: 2px solid #ffedd8; /* Border color */
+  background-color: #ffa559;
   padding: 10px 20px; /* Add padding to create space inside the item */
   border-radius: 30px; /* Rounded corners for a modern look */
   margin-bottom: 10px; /* Spacing between nav items */
   display: flex;
   align-items: center; /* Center the content */
   justify-content: center; /* Space out any elements inside */
-  transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition on hover */
+  transition:
+    background-color 0.3s ease,
+    transform 0.3s ease; /* Smooth transition on hover */
 }
 </style>
