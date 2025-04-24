@@ -5,7 +5,7 @@
       <div class="container-fluid">
         <a class="navbar-brand d-flex align-items-center" href="#">
           <img :src="logo" alt="Explora Butuan" width="40" height="auto" class="me-2">
-          <span class="fw-bold">Explora Butuan</span>
+          <span class="fw-bold">Explorra D’ Explorer </span>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -23,6 +23,9 @@
               <li class="nav-item">
                 <button class="nav-link" @click="logout">Logout</button>
               </li>
+               <li class="nav-item">
+                <RouterLink class="nav-link active" to="/profile">Profile</RouterLink>
+              </li>
             </ul>
           </div>
         </div>
@@ -38,6 +41,11 @@
 <!-- Bottom Navbar -->
 <div class="fixed-bottom bg-dark border-top">
   <div class="container d-flex justify-content-around py-2 px-3">
+
+    <RouterLink to="/favorites" class="text-center text-decoration-none text-light">
+      <i class="bi bi-heart"></i>
+      <div>Favorite</div>
+    </RouterLink>
 
     <RouterLink to="/home" class="text-center text-decoration-none text-light">
       <i class="bi bi-house-check-fill"></i>
