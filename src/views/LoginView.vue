@@ -1,46 +1,42 @@
 <script setup>
-import { ref } from 'vue';
-import { supabase } from '../supabase'; // Import supabase client
-import { useRouter } from 'vue-router'; // Import Vue Router
+import { ref } from 'vue'
+import { supabase } from '../supabase'
+import { useRouter } from 'vue-router'
 
-// Define ref variables for form inputs
-let email = ref('');
-let password = ref('');
+// Form inputs
+const email = ref('')
+const password = ref('')
+const showPassword = ref(false) // 👈 Add show/hide password toggle
 
-// Use the router for redirection
-const router = useRouter();
+const router = useRouter()
 
-// Handle login
 const login = async (e) => {
-  e.preventDefault(); // Prevent default form submission
+  e.preventDefault()
 
-  // Simple validation for empty fields
   if (!email.value || !password.value) {
-    alert('Please fill in both fields');
-    return;
+    alert('Please fill in both fields')
+    return
   }
 
   try {
-    // Attempt to sign in with Supabase
     const { data, error } = await supabase.auth.signInWithPassword({
       email: email.value,
       password: password.value,
-    });
+    })
 
     if (error) {
-      console.error('Error during login:', error.message);
-      alert('Error during login: ' + error.message);
+      console.error('Error during login:', error.message)
+      alert('Error during login: ' + error.message)
     } else {
-      console.log('Login successful:', data);
-      // Redirect to home or dashboard after successful login
-      router.push('/home');
-      alert('Login successful!');
+      console.log('Login successful:', data)
+      router.push('/home')
+      alert('Login successful!')
     }
   } catch (error) {
-    console.error('Error:', error);
-    alert('An error occurred. Please try again.');
+    console.error('Error:', error)
+    alert('An error occurred. Please try again.')
   }
-};
+}
 </script>
 
 <template>
@@ -49,7 +45,7 @@ const login = async (e) => {
       <div class="col-md-6">
         <div class="card shadow-lg p-4">
           <h3 class="text-center mb-4">Sign In</h3>
-          <!-- Login form -->
+
           <form @submit="login">
             <!-- Email Input -->
             <div class="form-floating mb-3">
@@ -64,10 +60,10 @@ const login = async (e) => {
               <label for="email">Email address</label>
             </div>
 
-            <!-- Password Input -->
-            <div class="form-floating mb-3">
+            <!-- Password Input with Eye Icon -->
+            <div class="form-floating mb-3 position-relative">
               <input
-                type="password"
+                :type="showPassword ? 'text' : 'password'"
                 class="form-control"
                 id="password"
                 placeholder="Password"
@@ -75,6 +71,11 @@ const login = async (e) => {
                 v-model="password"
               />
               <label for="password">Password</label>
+
+              <!-- Eye Toggle -->
+              <span class="password-toggle" @click="showPassword = !showPassword">
+                <i :class="showPassword ? 'bi bi-eye-fill' : 'bi bi-eye-slash'"></i>
+              </span>
             </div>
 
             <!-- Submit Button -->
@@ -94,15 +95,28 @@ const login = async (e) => {
 </template>
 
 <style scoped>
-  .card {
-    border-radius: 10px;
-  }
-  .btn-primary {
-    background-color: #007bff;
-    border-color: #007bff;
-  }
-  .btn-primary:hover {
-    background-color: #0056b3;
-    border-color: #0056b3;
-  }
+.card {
+  border-radius: 10px;
+}
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+.btn-primary:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+
+/* Password Eye Icon Position */
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+.password-toggle i {
+  font-size: 1.2rem;
+  color: #6c757d;
+}
 </style>
