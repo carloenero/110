@@ -1,34 +1,32 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRouter, useRoute } from 'vue-router' // Import Vue Router
-import { supabase } from '../supabase' // Import Supabase client
-import logo from '@/assets/images/logo.png' // Import image for the login page
+import { useRouter, useRoute } from 'vue-router'
+import { supabase } from '../supabase'
+import logo from '@/assets/images/logo.png'
 
-// Define the router and route
 const router = useRouter()
-const route = useRoute() // Get the current route
+const route = useRoute()
 
-// Define ref for user session
 const user = ref(null)
 
-// Check user session on mounted
+// Password visibility
+const showPassword = ref(false)
+
 onMounted(async () => {
-  const { data: session } = await supabase.auth.getSession() // Correct way to get session
-  user.value = session?.user // Assign the user data to the ref
+  const { data: session } = await supabase.auth.getSession()
+  user.value = session?.user
 })
 </script>
 
 <template>
   <div>
-    <!-- Conditionally render the layout (Navbar, Slot, Footer) for specific routes -->
     <div
       v-if="route.name === 'landing' || route.name === 'login' || route.name === 'register'"
-      class="background-color"
+      class="background-color min-vh-100 d-flex flex-column"
     >
-      <!-- Navbar -->
       <nav class="navbar bg-body-tertiary fixed-top shadow-sm">
         <div class="container-fluid">
-          <h1 class="navbar-brand" href="#">Explorra D’ Explorer </h1>
+          <h1 class="navbar-brand">Explorra D’ Explorer</h1>
           <button
             class="navbar-toggler"
             type="button"
@@ -71,19 +69,14 @@ onMounted(async () => {
         </div>
       </nav>
 
-      <!-- Main Content -->
-      <div class="container py-5">
-        <div class="col-sm-12 text-center">
-          <img id="logo" :src="logo" width="50%" height="5%" alt="Logo" />
-          <h1 class="fst-italic">Explorra D’ Explorer </h1>
+      <div class="container py-5 mt-5">
+        <div class="row justify-content-center">
+            <slot></slot>
         </div>
-        <!-- Content Slot -->
-        <slot></slot>
       </div>
 
-      <!-- Bottom Navbar -->
-      <div class="fixed-bottom bg-dark border-top">
-        <div class="container d-flex justify-content-around py-2 px-3">
+      <div class="fixed-bottom bg-dark border-top py-2">
+        <div class="container d-flex justify-content-around">
           <RouterLink to="/login" class="text-center text-decoration-none text-light">
             <i class="bi bi-box-arrow-in-right"></i>
             <div>Login</div>
@@ -97,16 +90,13 @@ onMounted(async () => {
       </div>
     </div>
 
-    <!-- For the Home route (and other routes), render only the content -->
     <div v-else>
       <slot></slot>
-      <!-- The slot will be replaced with the content of the route -->
     </div>
   </div>
 </template>
 
 <style scoped>
-/* Navbar Styles */
 .background-color {
   background: repeating-linear-gradient(
     45deg,
@@ -116,6 +106,7 @@ onMounted(async () => {
     #f6c96e 66%,
     #f6c96e 66%
   );
+  min-height: 100vh;
 }
 
 .navbar-brand {
@@ -124,35 +115,30 @@ onMounted(async () => {
 }
 
 .nav-link {
-  color: #000000;
+  color: #000;
 }
 
 .offcanvas-body {
   background-color: #fff6e0;
 }
 
-/* Home View Styles */
 .container {
   max-width: 1200px;
 }
 
 h1 {
-  font-size: 3rem;
+  font-size: 2.5rem;
   font-weight: bold;
   color: #333;
 }
 
-p.lead {
-  font-size: 1.25rem;
-  color: #555;
-}
-
-img {
+img.logo-img {
+  width: 200px;
+  height: auto;
   border-radius: 10px;
-  cursor: pointer; /* Make the logo clickable for the hover effect */
+  cursor: pointer;
 }
 
-/* Bottom Navbar Styles */
 .fixed-bottom {
   background-color: #343a40;
 }
@@ -171,50 +157,46 @@ img {
 
 @keyframes popUp {
   0% {
-    transform: scale(0.5); /* Start smaller */
-    opacity: 0; /* Start invisible */
+    transform: scale(0.5);
+    opacity: 0;
   }
   50% {
-    transform: scale(1.2); /* Grow slightly larger */
-    opacity: 0.7; /* Make slightly visible */
+    transform: scale(1.2);
+    opacity: 0.7;
   }
   100% {
-    transform: scale(1); /* Return to normal size */
-    opacity: 1; /* Fully visible */
+    transform: scale(1);
+    opacity: 1;
   }
 }
 
-/* Apply the pop-up animation to the navbar-brand */
 .fst-italic {
-  animation: popUp 1s ease-out; /* Apply animation with 1-second duration */
+  animation: popUp 1s ease-out;
 }
 
-/* Reduce the width of the offcanvas menu */
 .offcanvas-end {
-  width: 200px; /* Change to any value you prefer */
+  width: 220px;
 }
 
-/* Adjust the opacity of the backdrop */
 .offcanvas-backdrop {
-  opacity: 0.5; /* Reduce the overlay intensity */
+  opacity: 0.5;
 }
 
-/* Optionally, add more spacing or padding adjustments */
 .offcanvas-body {
   padding: 20px;
 }
 
 .nav-item {
-  border: 2px solid #ffedd8; /* Border color */
+  border: 2px solid #ffedd8;
   background-color: #ffa559;
-  padding: 10px 20px; /* Add padding to create space inside the item */
-  border-radius: 30px; /* Rounded corners for a modern look */
-  margin-bottom: 10px; /* Spacing between nav items */
+  padding: 10px 20px;
+  border-radius: 30px;
+  margin-bottom: 10px;
   display: flex;
-  align-items: center; /* Center the content */
-  justify-content: center; /* Space out any elements inside */
+  align-items: center;
+  justify-content: center;
   transition:
     background-color 0.3s ease,
-    transform 0.3s ease; /* Smooth transition on hover */
+    transform 0.3s ease;
 }
 </style>
