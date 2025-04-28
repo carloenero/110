@@ -1,94 +1,159 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { supabase } from '@/supabase'; // Import Supabase client
+import { ref, onMounted } from 'vue'
+import { supabase } from '@/supabase'
 
-// Reactive variables to hold fetched data and selected category
-const places = ref([]);
-const hotels = ref([]);
-const selectedCategory = ref('places'); // Default category is 'places'
+// Reactive variables
+const places = ref([])
+const hotels = ref([])
+const selectedCategory = ref('places') // Default category
 
-// Fetch data from Supabase when the component is mounted
 onMounted(async () => {
   // Fetch places
-  const { data: placesData, error: placesError } = await supabase.from('places').select('*');
+  const { data: placesData, error: placesError } = await supabase.from('places').select('*')
   if (placesError) {
-    console.error('Error fetching places:', placesError);
-    return;
+    console.error('Error fetching places:', placesError)
+    return
   }
-  places.value = placesData; // Store places data
-  
-  // Fetch hotels (assuming they are stored in a separate table)
-  const { data: hotelsData, error: hotelsError } = await supabase.from('hotels').select('*');
+  places.value = placesData
+
+  // Fetch hotels
+  const { data: hotelsData, error: hotelsError } = await supabase.from('hotels').select('*')
   if (hotelsError) {
-    console.error('Error fetching hotels:', hotelsError);
-    return;
+    console.error('Error fetching hotels:', hotelsError)
+    return
   }
-  hotels.value = hotelsData; // Store hotel data
-});
+  hotels.value = hotelsData
+})
 </script>
 
 <template>
   <v-app>
     <!-- Category Selector -->
     <div class="category-selector text-center">
-      <button @click="selectedCategory = 'places'" :class="{ active: selectedCategory === 'places' }" class="btn btn-primary">Places</button>
-      <button @click="selectedCategory = 'hotels'" :class="{ active: selectedCategory === 'hotels' }" class="btn btn-secondary">Hotels</button>
+      <button
+        @click="selectedCategory = 'places'"
+        :class="{ active: selectedCategory === 'places' }"
+        class="btn-category"
+      >
+        Places
+      </button>
+      <button
+        @click="selectedCategory = 'hotels'"
+        :class="{ active: selectedCategory === 'hotels' }"
+        class="btn-category"
+      >
+        Hotels
+      </button>
     </div>
 
-    <!-- Carousel for Places or Hotels -->
-    <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
+    <!-- Carousel -->
+    <div id="carouselExampleAutoplaying" class="carousel slide rounded-carousel shadow" data-bs-ride="carousel">
       <div class="carousel-inner">
-        <!-- Display Images Based on Selected Category -->
-        <div v-for="(item, index) in (selectedCategory === 'places' ? places : hotels)" :key="index" class="carousel-item" :class="{ active: index === 0 }" :data-bs-interval="index === 0 ? 10000 : 2000">
-          <img :src="item.image" class="images d-block w-100 p-4 shadow-lg mb-5 rounded" :alt="selectedCategory + ' Image'">
+        <div
+          v-for="(item, index) in selectedCategory === 'places' ? places : hotels"
+          :key="index"
+          class="carousel-item"
+          :class="{ active: index === 0 }"
+          :data-bs-interval="index === 0 ? 10000 : 3000"
+        >
+          <img
+            :src="item.image"
+            class="carousel-image d-block mx-auto"
+            :alt="selectedCategory + ' Image'"
+          />
         </div>
       </div>
 
-      <!-- Carousel controls -->
-      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <!-- Controls -->
+      <button
+        class="carousel-control-prev"
+        type="button"
+        data-bs-target="#carouselExampleAutoplaying"
+        data-bs-slide="prev"
+      >
+        <span class="carousel-control-prev-icon custom-control" aria-hidden="true"></span>
         <span class="visually-hidden">Previous</span>
       </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <button
+        class="carousel-control-next"
+        type="button"
+        data-bs-target="#carouselExampleAutoplaying"
+        data-bs-slide="next"
+      >
+        <span class="carousel-control-next-icon custom-control" aria-hidden="true"></span>
         <span class="visually-hidden">Next</span>
       </button>
     </div>
 
-    <!-- Welcome Text -->
-    <div class="container-welcome">
-      <h1 class="text-center">Welcome to Butuan City</h1>
-      <p class="text-center">Discover the best places and hotels in Butuan City.</p>
+    <!-- Welcome Section -->
+    <div class="container-welcome mt-5">
+      <h1>Welcome to Butuan City</h1>
+      <p>Discover the best places and hotels in Butuan City.</p>
     </div>
   </v-app>
 </template>
 
 <style scoped>
+/* Category Buttons */
 .category-selector {
-  margin-bottom: 20px;
+  margin: 20px 0;
 }
-
-.category-selector button {
+.btn-category {
+  background: #ffffff;
+  color: #334347;
+  font-weight: 600;
   margin: 0 10px;
+  padding: 10px 20px;
+  border: 2px solid #334347;
+  border-radius: 30px;
+  transition: all 0.3s ease;
 }
-
-.category-selector .active {
-  font-weight: bold;
+.btn-category:hover {
   background-color: #334347;
-  color: white;
+  color: #ffffff;
+}
+.btn-category.active {
+  background-color: #334347;
+  color: #ffffff;
 }
 
-.carousel-control-prev-icon, .carousel-control-next-icon {
-  background-color: #181C14;
+/* Carousel */
+.rounded-carousel {
+  overflow: hidden;
+  border-radius: 20px;
+  background-color: #f6f6f6;
+  margin: 0 auto;
+  max-width: 900px;
+}
+.carousel-image {
+  padding: 20px;
+  height: 450px;
+  object-fit: cover;
+  width: 100%;
+  background-color: antiquewhite;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.15);
+}
+
+/* Custom controls */
+.custom-control {
+  background-color: #334347;
   border-radius: 50%;
 }
 
-.images {
-  border: 2px solid #06202B;
-  background-color: antiquewhite;
-}
-
+/* Welcome Section */
 .container-welcome {
-  margin-top: 20px;
+  text-align: center;
+  margin-top: 40px;
+}
+.container-welcome h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #334347;
+  margin-bottom: 10px;
+}
+.container-welcome p {
+  font-size: 1.2rem;
+  color: #555;
 }
 </style>
