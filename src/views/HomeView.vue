@@ -1,41 +1,19 @@
 <template>
+  <LayoutView>
   <div class="container-fluid">
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top bg-light shadow-sm">
-      <div class="container-fluid">
-        <a class="navbar-brand d-flex align-items-center" href="#">
-          <img :src="logo" alt="Explora Butuan" width="40" height="auto" class="me-2">
-          <span class="fw-bold">Explora Butuan</span>
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
-          <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-          </div>
-          <div class="offcanvas-body">
-            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Link</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </nav>
-
     <!-- Main Content -->
     <div class="main-content text-center py-5 mt-5">
       <h3 class="display-4 mb-2">Hotels and Places</h3>
 
       <!-- Search Form -->
       <form @submit.prevent="handleSearch" class="d-flex justify-content-center" role="search">
-        <input v-model="searchQuery" class="form-control w-50 me-2 rounded-pill" type="search" placeholder="Search Hotels or Places" aria-label="Search">
+        <input
+          v-model="searchQuery"
+          class="form-control w-50 me-2 rounded-pill"
+          type="search"
+          placeholder="Search Hotels or Places"
+          aria-label="Search"
+        />
         <button class="btn btn-outline-primary rounded-pill btn-sm" type="submit">Search</button>
       </form>
     </div>
@@ -51,81 +29,56 @@
     </div>
 
     <div class="button-container">
-      <button class="explora-button"><RouterLink class="explora-button" to="/places">Explora</RouterLink></button>
+      <button class="explora-button">
+        <RouterLink class="explora-button" to="/places">EXPLORA</RouterLink>
+      </button>
     </div>
+
   </div>
-
-  <!-- Bottom Navbar -->
-  <div class="fixed-bottom bg-dark border-top">
-    <div class="container d-flex justify-content-around py-2 px-3">
-      <RouterLink to="/login" class="text-center text-decoration-none text-light">
-        <i class="bi bi-suit-heart-fill"></i>
-        <div>Favorites</div>
-      </RouterLink>
-
-      <RouterLink to="/home" class="text-center text-decoration-none text-light">
-        <i class="bi bi-house-check-fill"></i>
-        <div>Home</div>
-      </RouterLink>
-
-      <RouterLink to="/hotels" class="text-center text-decoration-none text-light">
-        <i class="bi bi-buildings-fill"></i>
-        <div>Hotels</div>
-      </RouterLink>
-
-      <RouterLink to="/places" class="text-center text-decoration-none text-light">
-       <i class="bi bi-backpack2"></i>
-        <div>Places</div>
-      </RouterLink>
-    </div>
-  </div>
+</LayoutView>
 </template>
 
 <script setup>
-import logo from '@/assets/images/logo.png'; // Import your logo image
-import { ref } from 'vue';
-import Map from '@/components/Map.vue'; // Import the Map component
+import LayoutView from '@/components/HomeLayout.vue'
+import logo from '@/assets/images/logo.png' // Import your logo image
+import { ref } from 'vue'
+import Map from '@/components/Map.vue' // Import the Map component
 
 // Hotel and place data
 const hotels = [
   { name: 'Almont Inland Resort', lat: 8.9508, lng: 125.5466 },
   { name: 'Watergate Hotel', lat: 8.9476, lng: 125.5407 },
   { name: 'Hotel Oazis', lat: 8.9463, lng: 125.5418 },
-  { name: 'Go Hotels Butuan', lat: 8.9510, lng: 125.5400 },
+  { name: 'Go Hotels Butuan', lat: 8.951, lng: 125.54 },
   { name: 'Las Palmas Hotel Butuan', lat: 8.9467, lng: 125.5393 },
-  { name: 'Butuan Grand Palace Hotel', lat: 8.9490, lng: 125.5384 },
-  { name: 'Teng\'s Place', lat: 8.9497, lng: 125.5432 },
+  { name: 'Butuan Grand Palace Hotel', lat: 8.949, lng: 125.5384 },
+  { name: "Teng's Place", lat: 8.9497, lng: 125.5432 },
   { name: 'The Brickstone Hotel', lat: 8.9498, lng: 125.5447 },
-];
+]
 
 const places = [
-  { name: 'Go Hotels Butuan', lat: 8.9510, lng: 125.5400 },
+  { name: 'Go Hotels Butuan', lat: 8.951, lng: 125.54 },
   { name: 'Las Palmas Hotel Butuan', lat: 8.9467, lng: 125.5393 },
-  { name: 'Butuan Grand Palace Hotel', lat: 8.9490, lng: 125.5384 },
-  { name: 'Teng\'s Place', lat: 8.9497, lng: 125.5432 },
+  { name: 'Butuan Grand Palace Hotel', lat: 8.949, lng: 125.5384 },
+  { name: "Teng's Place", lat: 8.9497, lng: 125.5432 },
   { name: 'The Brickstone Hotel', lat: 8.9498, lng: 125.5447 },
-];
+]
 
 // Search query and filtered results
-const searchQuery = ref('');
-const filteredHotels = ref(hotels);
-const filteredPlaces = ref(places);
+const searchQuery = ref('')
+const filteredHotels = ref(hotels)
+const filteredPlaces = ref(places)
 
 // Handle search function (case-insensitive)
 const handleSearch = () => {
-  const query = searchQuery.value.toLowerCase();
+  const query = searchQuery.value.toLowerCase()
 
   // Filter hotels (case-insensitive)
-  filteredHotels.value = hotels.filter(hotel =>
-    hotel.name.toLowerCase().includes(query)
-  );
-  
-  // Filter places (case-insensitive)
-  filteredPlaces.value = places.filter(place =>
-    place.name.toLowerCase().includes(query)
-  );
-};
+  filteredHotels.value = hotels.filter((hotel) => hotel.name.toLowerCase().includes(query))
 
+  // Filter places (case-insensitive)
+  filteredPlaces.value = places.filter((place) => place.name.toLowerCase().includes(query))
+}
 </script>
 
 <style scoped>
@@ -234,7 +187,7 @@ const handleSearch = () => {
 /* Button styling */
 .explora-button {
   text-decoration: none;
-  background-color: #16C47F; /* Blue background */
+  background-color: #16c47f; /* Blue background */
   color: white; /* White text */
   font-size: 24px; /* Larger font size */
   font-weight: 600; /* Semi-bold text */
@@ -243,7 +196,9 @@ const handleSearch = () => {
   border: none; /* Remove border */
   border-radius: 50px; /* Rounded corners */
   cursor: pointer; /* Pointer cursor on hover */
-  transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease; /* Smooth transition */
 }
 
 /* Button hover effect */
@@ -251,6 +206,4 @@ const handleSearch = () => {
   background-color: #0056b3; /* Darker blue on hover */
   box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3); /* Shadow effect */
 }
-
-
 </style>
