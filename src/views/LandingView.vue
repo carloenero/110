@@ -121,7 +121,6 @@ onMounted(async () => {
 .rounded-carousel {
   overflow: hidden;
   border-radius: 20px;
-  background-color: #f6f6f6;
   margin: 0 auto;
   max-width: 900px;
 }
@@ -130,7 +129,7 @@ onMounted(async () => {
   height: 450px;
   object-fit: cover;
   width: 100%;
-  background-color: antiquewhite;
+  background-color: transparent;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0,0,0,0.15);
 }
