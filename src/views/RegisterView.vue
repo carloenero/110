@@ -133,6 +133,7 @@ onMounted(() => {
 <style scoped>
 .card {
   border-radius: 10px;
+  background-color: #EDF4C2;
 }
 .btn-primary {
   background-color: #007bff;
