@@ -6,34 +6,37 @@
       </div>
 
       <div v-else>
-        <h1 class="profile-title">User Profile</h1>
-
-        <div v-if="user" class="profile-card">
-          <img :src="user.avatar_url || '/default-avatar.png'" alt="User Avatar" class="avatar" />
-          <div class="user-info">
-            <p><strong>Email:</strong> {{ user.email }}</p>
-            <p><strong>Created At:</strong> {{ new Date(user.created_at).toLocaleString() }}</p>
+        <div class="profile-card">
+          <div class="avatar-container">
+            <img :src="user.avatar_url || '/default-avatar.png'" alt="User Avatar" class="avatar" />
           </div>
-        </div>
+          <div class="profile-info">
+            <h2 class="user-name">{{ user.email }}</h2>
+            <p class="user-details"><strong>Email:</strong> {{ user.email }}</p>
+            <p class="user-details"><strong>Created At:</strong> {{ new Date(user.created_at).toLocaleString() }}</p>
+          </div>
 
-        <div class="upload-section">
-          <label for="file-upload" class="file-upload-label">
-            <i class="bi bi-cloud-upload"></i> Upload Profile Picture
-          </label>
-          <input 
-            type="file" 
-            id="file-upload" 
-            class="file-upload-input" 
-            @change="uploadImage" 
-            accept="image/*" 
-          />
-          <p v-if="uploading" class="uploading">Uploading...</p>
-          <p v-if="uploadError" class="error">{{ uploadError }}</p>
+          <!-- Upload Section -->
+          <div class="upload-section">
+            <label for="file-upload" class="file-upload-label">
+              <i class="bi bi-cloud-upload"></i> Upload New Profile Picture
+            </label>
+            <input 
+              type="file" 
+              id="file-upload" 
+              class="file-upload-input" 
+              @change="uploadImage" 
+              accept="image/*" 
+            />
+            <p v-if="uploading" class="uploading">Uploading...</p>
+            <p v-if="uploadError" class="error">{{ uploadError }}</p>
+          </div>
         </div>
       </div>
     </div>
   </LayoutView>
 </template>
+
 
 <script setup>
 import { ref, onMounted } from 'vue'
@@ -49,7 +52,7 @@ onMounted(async () => {
   await fetchUserProfile()
 })
 
-// Fetch user profile
+// Fetch user profile from Supabase
 const fetchUserProfile = async () => {
   try {
     const { data: { user: currentUser }, error } = await supabase.auth.getUser()
@@ -73,7 +76,7 @@ const fetchUserProfile = async () => {
   }
 }
 
-// Upload image to 'reportimage' bucket
+// Handle image upload and update profile
 const uploadImage = async (event) => {
   const file = event.target.files[0];
   if (!file) return;
@@ -84,7 +87,7 @@ const uploadImage = async (event) => {
   try {
     const fileName = `${Date.now()}-${file.name}`;
     
-    // Upload the image
+    // Upload the image to Supabase storage
     const { data, error: uploadErrorResult } = await supabase.storage
       .from('avatars')
       .upload(fileName, file);
@@ -95,7 +98,7 @@ const uploadImage = async (event) => {
       return;
     }
 
-    // Build public URL
+    // Build the public URL
     const filePath = data.path; 
     const baseURL = 'https://vuqbhzozalzkwpprsket.supabase.co';
     const publicURL = `${baseURL}/storage/v1/object/public/avatars/${filePath}`;
@@ -108,7 +111,7 @@ const uploadImage = async (event) => {
       return;
     }
 
-    // Fetch existing profile
+    // Fetch existing profile data
     const { data: profileData, error: profileError } = await supabase
       .from('profiles')
       .select('id, user_id')
@@ -121,7 +124,7 @@ const uploadImage = async (event) => {
       return;
     }
 
-    // Upsert avatar URL into profiles
+    // Update or create profile with new avatar URL
     const { error: upsertError } = await supabase
       .from('profiles')
       .upsert({
@@ -136,7 +139,7 @@ const uploadImage = async (event) => {
       return;
     }
 
-    // Refetch user profile
+    // Refetch user profile to reflect the updated avatar
     await fetchUserProfile();
 
   } catch (error) {
@@ -149,77 +152,80 @@ const uploadImage = async (event) => {
 </script>
 
 <style scoped>
-/* Container */
+/* General Container */
 .profile-container {
-  max-width: 720px;
-  margin: 40px auto;
-  padding: 40px 30px;
-  background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
-  border-radius: 20px;
-  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   text-align: center;
-  transition: all 0.4s ease;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.3s ease;
 }
 
 /* Loading State */
 .loading {
   font-size: 1.6em;
   font-weight: 600;
-  color: #7b8a97;
-}
-
-/* Title */
-.profile-title {
-  font-size: 2.8rem;
-  font-weight: bold;
-  color: #334e68;
-  margin-bottom: 30px;
-  font-family: 'Poppins', sans-serif;
+  color: #8e8e8e;
+  animation: fadeIn 1s ease-in-out;
 }
 
 /* Profile Card */
 .profile-card {
-  background: #ffffff;
-  padding: 30px;
-  border-radius: 16px;
-  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
-  margin-bottom: 40px;
-  transition: transform 0.3s ease;
+  background: #f8f9fa; /* Soft background */
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  text-align: center;
 }
 
-.profile-card:hover {
-  transform: translateY(-5px);
+/* Avatar Styling */
+.avatar-container {
+  margin-bottom: 20px;
 }
 
-/* Avatar Image */
 .avatar {
   width: 150px;
   height: 150px;
   object-fit: cover;
   border-radius: 50%;
-  border: 4px solid #d4d9de;
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  border: 4px solid #ddd;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
 }
 
+/* Hover effect on avatar */
 .avatar:hover {
   border-color: #47b5ff;
-  box-shadow: 0px 6px 20px rgba(71, 181, 255, 0.5);
+  box-shadow: 0 6px 15px rgba(71, 181, 255, 0.5);
 }
 
 /* User Info */
-.user-info p {
-  font-size: 1.2em;
-  color: #555;
-  margin: 8px 0;
+.profile-info {
+  width: 100%;
+  margin-top: 20px;
 }
 
-.user-info strong {
-  color: #334e68;
+.user-name {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.user-details {
+  font-size: 1.1rem;
+  color: #555;
+  margin: 10px 0;
+}
+
+.user-details strong {
+  color: #333;
 }
 
 /* Upload Section */
@@ -227,67 +233,76 @@ const uploadImage = async (event) => {
   margin-top: 30px;
 }
 
-/* Upload Button */
 .file-upload-label {
-  background: linear-gradient(135deg, #47b5ff, #679ffb);
-  color: #ffffff;
-  padding: 14px 30px;
+  background: linear-gradient(135deg, #47b5ff, #6a99e7);
+  color: #fff;
+  padding: 12px 30px;
   border-radius: 30px;
   cursor: pointer;
   display: inline-block;
   font-weight: 600;
-  font-size: 1.1em;
-  transition: background 0.4s ease, transform 0.3s ease;
+  font-size: 1.1rem;
+  transition: background 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+/* Hover effect on upload button */
 .file-upload-label:hover {
-  background: linear-gradient(135deg, #679ffb, #47b5ff);
+  background: linear-gradient(135deg, #6a99e7, #47b5ff);
   transform: scale(1.05);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* Upload Input Hidden */
 .file-upload-input {
   display: none;
 }
 
 /* Uploading Text */
 .uploading {
-  font-size: 1.2em;
-  color: #2d9cdb;
+  font-size: 1.1rem;
+  color: #2ecc71;
   margin-top: 15px;
+  font-weight: 600;
 }
 
 /* Error Message */
 .error {
-  color: #e63946;
-  font-size: 1.1em;
+  color: #e74c3c;
+  font-size: 1.1rem;
   margin-top: 10px;
   font-weight: 600;
 }
 
-/* Smooth Responsive */
+/* Responsive Design */
 @media (max-width: 768px) {
   .profile-container {
-    padding: 30px 20px;
+    padding: 30px;
   }
-  
-  .profile-title {
-    font-size: 2.2rem;
+
+  .user-name {
+    font-size: 1.3rem;
   }
-  
+
   .avatar {
     width: 120px;
     height: 120px;
   }
-  
-  .user-info p {
-    font-size: 1.1em;
+
+  .user-details {
+    font-size: 1rem;
   }
-  
+
   .file-upload-label {
-    font-size: 1em;
-    padding: 12px 24px;
+    font-size: 1rem;
+    padding: 10px 25px;
   }
 }
-</style>
 
+/* Animation for Loading Text */
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+
+</style>
