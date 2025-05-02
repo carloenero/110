@@ -18,7 +18,7 @@
           <div class="offcanvas-body">
             <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">Home</a>
+                <RouterLink class="nav-link active" aria-current="page" to="/home">Home</RouterLink>
               </li>
                <li class="nav-item">
                 <RouterLink class="nav-link active" to="/profile">Profile</RouterLink>
@@ -39,7 +39,7 @@
 </div>
 
 <!-- Bottom Navbar -->
-<div class="fixed-bottom bg-dark border-top">
+<div class="fixed-bottom border-top">
   <div class="container d-flex justify-content-around py-2 px-3">
 
     <RouterLink to="/favorites" class="text-center text-decoration-none text-light">
@@ -72,22 +72,30 @@ import logo from '@/assets/images/logo.png'; // Import your logo image
 
 // Get access to the router instance
 const router = useRouter();
+// Logout function with confirmation
 
-// Logout function
 const logout = async () => {
-  try {
-    // Sign out the user with Supabase
-    await supabase.auth.signOut();
-    console.log('Logged out successfully');
-    
-    // Redirect to the login page after logout
-    router.push('/login');
-    alert('You have been logged out.');
-  } catch (error) {
-    console.error('Error during logout:', error.message);
-    alert('Error during logout: ' + error.message);
+  // Ask the user for confirmation before logging out
+  const confirmed = window.confirm('Are you sure you want to log out?');
+
+  if (confirmed) {
+    try {
+      // Sign out the user with Supabase
+      await supabase.auth.signOut();
+      console.log('Logged out successfully');
+      
+      // Redirect to the login page after logout
+      router.push('/login');
+      alert('You have been logged out.');
+    } catch (error) {
+      console.error('Error during logout:', error.message);
+      alert('Error during logout: ' + error.message);
+    }
+  } else {
+    console.log('Logout cancelled');
   }
 };
+
 </script>
 
 <style scoped>
@@ -100,7 +108,7 @@ const logout = async () => {
 
 /* Navbar Styling */
 .navbar {
-  background-color: #f8f9fa;
+  background-color: transparent;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -123,7 +131,7 @@ const logout = async () => {
 }
 
 .offcanvas-body {
-  background-color: #f1f1f1;
+  background-color: transparent;
 }
 
 .offcanvas-header {
@@ -161,15 +169,20 @@ const logout = async () => {
 
 /* Bottom Navbar Styles */
 .fixed-bottom {
-  background-color: #343a40;
+  background-color: transparent;
 }
 
 .fixed-bottom .text-light {
-  color: #f8f9fa !important;
+  border: 2px solid black;
+  color: #210F37 !important;
+  background-color: #E5D0AC;
+  padding:5px 10px; /* Add padding to create space around the text */
+  border-radius: 50%; /* This makes the border circular */
+  display: inline-block; /* Ensures the border wraps the text */
 }
 
 .fixed-bottom .text-light:hover {
-  color: #007bff !important;
+  color: #BF3131 !important;
 }
 
 .text-center {
