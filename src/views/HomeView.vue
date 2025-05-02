@@ -2,7 +2,7 @@
   <LayoutView>
   <div class="container-fluid">
     <!-- Main Content -->
-    <div class="main-content text-center py-5 mt-5">
+    <div class="main-content text-center">
       <h3 class="display-4 mb-2">Hotels and Places</h3>
 
       <!-- Search Form -->
@@ -17,7 +17,7 @@
         <button class="btn btn-outline-primary rounded-pill btn-sm" type="submit">Search</button>
       </form>
     </div>
-
+    
     <div class="container">
       <div class="card">
         <div class="card-body">
@@ -26,12 +26,7 @@
           <Map :hotels="filteredHotels" :places="filteredPlaces" />
         </div>
       </div>
-    </div>
-
-    <div class="button-container">
-      <button class="explora-button">
-        <RouterLink class="explora-button" to="/places">EXPLORA</RouterLink>
-      </button>
+      
     </div>
 
   </div>
@@ -176,13 +171,6 @@ const handleSearch = () => {
   margin-bottom: 5px;
 }
 
-/* Flexbox container to center the button */
-.button-container {
-  display: flex;
-  justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically */
-  margin-top: 50px;
-}
 
 /* Button styling */
 .explora-button {
