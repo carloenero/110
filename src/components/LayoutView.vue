@@ -24,7 +24,7 @@ onMounted(async () => {
       v-if="route.name === 'landing' || route.name === 'login' || route.name === 'register'"
       class="background-color min-vh-100 d-flex flex-column"
     >
-      <nav class="navbar bg-body-tertiary fixed-top shadow-sm">
+      <nav class="navbar fixed-top shadow-sm">
         <div class="container-fluid">
           <h1 class="navbar-brand">Explorra D’ Explorer</h1>
           <button
@@ -75,11 +75,16 @@ onMounted(async () => {
         </div>
       </div>
 
-      <div class="fixed-bottom bg-dark border-top py-2">
+      <div class="fixed-bottom border-top py-2">
         <div class="container d-flex justify-content-around">
           <RouterLink to="/login" class="text-center text-decoration-none text-light">
             <i class="bi bi-box-arrow-in-right"></i>
             <div>Login</div>
+          </RouterLink>
+
+          <RouterLink to="/" class="text-center text-decoration-none text-light">
+            <i class="bi bi-file-person"></i>
+            <div>About Us</div>
           </RouterLink>
 
           <RouterLink to="/register" class="text-center text-decoration-none text-light">
@@ -100,9 +105,7 @@ onMounted(async () => {
 .background-color {
   background: repeating-linear-gradient(
     45deg,
-    #bbd8a3,
-    #bbd8a3 33%,
-    #fb653c 33%,
+    #bbd8a3,  
     #f6c96e 66%,
     #f6c96e 66%
   );
@@ -119,7 +122,7 @@ onMounted(async () => {
 }
 
 .offcanvas-body {
-  background-color: #fff6e0;
+  background-color: #EDF4C2;
 }
 
 .container {
@@ -140,17 +143,21 @@ img.logo-img {
 }
 
 .fixed-bottom {
-  background-color: #343a40;
+  background-color: transparent;
 }
 
 .fixed-bottom .text-light {
-  color: #f8f9fa !important;
+  border: 2px solid black;
+  color: #210F37 !important;
+  background-color: #E5D0AC;
+  padding:5px 10px; /* Add padding to create space around the text */
+  border-radius: 50%; /* This makes the border circular */
+  display: inline-block; /* Ensures the border wraps the text */
 }
 
 .fixed-bottom .text-light:hover {
-  color: #007bff !important;
+  color: #BF3131 !important;
 }
-
 .text-center {
   font-size: 0.9rem;
 }
@@ -176,6 +183,7 @@ img.logo-img {
 
 .offcanvas-end {
   width: 220px;
+  background-color: #EDF4C2;
 }
 
 .offcanvas-backdrop {
