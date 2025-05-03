@@ -17,16 +17,19 @@ const router = createRouter({
       path: '/',
       name: 'landing',
       component: LandingView,
+      beforeEnter: authGuard,
     },
     {
       path: '/login',
       name: 'login',
       component: LoginView,
+      beforeEnter: authGuard,
     },
     {
       path: '/register',
       name: 'register',
       component: RegisterView,
+      beforeEnter: authGuard,
     },
     {
       path: '/map',
