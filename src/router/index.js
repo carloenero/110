@@ -8,7 +8,10 @@ import HotelsView from '../views/HotelsView.vue'
 import PlacesView from '../views/PlacesView.vue'
 import FavoritesView from '@/views/FavoritesView.vue'
 import ProfilesView from '@/views/ProfilesView.vue'
+
+// ✅ FIXED: Direct imports from their actual files
 import { authGuard } from './authGuard'
+import { guestGuard } from './guestGuard'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -17,19 +20,19 @@ const router = createRouter({
       path: '/',
       name: 'landing',
       component: LandingView,
-      beforeEnter: authGuard,
+      beforeEnter: guestGuard,
     },
     {
       path: '/login',
       name: 'login',
       component: LoginView,
-      beforeEnter: authGuard,
+      beforeEnter: guestGuard, // ✅ Prevent access when logged in
     },
     {
       path: '/register',
       name: 'register',
       component: RegisterView,
-      beforeEnter: authGuard,
+      beforeEnter: guestGuard, // ✅ Prevent access when logged in
     },
     {
       path: '/map',
