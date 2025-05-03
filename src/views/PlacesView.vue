@@ -107,7 +107,6 @@ const saveToSupabase = async (place) => {
             :src="place.image"
             class="d-block w-100"
             alt="Place image"
-            @click="openImage(place)"
             style="cursor: pointer"
           />
           <div class="carousel-caption d-none d-md-block">
