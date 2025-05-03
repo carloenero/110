@@ -18,7 +18,7 @@
       </form>
     </div>
     
-    <div class="container">
+    <div class="container mt-2">
       <div class="card">
         <div class="card-body">
           <h5 class="card-title">Map</h5>
@@ -35,7 +35,6 @@
 
 <script setup>
 import LayoutView from '@/components/HomeLayout.vue'
-import logo from '@/assets/images/logo.png' // Import your logo image
 import { ref } from 'vue'
 import Map from '@/components/Map.vue' // Import the Map component
 
