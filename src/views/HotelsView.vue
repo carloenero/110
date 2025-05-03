@@ -107,7 +107,6 @@ const saveToSupabase = async (hotel) => {
             :src="hotel.image"
             class="d-block w-100"
             alt="Hotel image"
-            @click="openImage(hotel)"
             style="cursor: pointer"
           />
           <div class="carousel-caption d-none d-md-block">
