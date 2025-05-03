@@ -48,7 +48,7 @@ watch([() => props.hotels, () => props.places], () => {
 const addMarkers = () => {
   // Define hotel icon
   const hotelIcon = L.icon({
-    iconUrl: '/places.png', // 🏨 Image path inside public/
+    iconUrl: '/hotels.png', // 🏨 Image path inside public/
     iconSize: [40, 40],
     iconAnchor: [20, 40],
     popupAnchor: [0, -40]
